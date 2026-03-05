@@ -98,11 +98,14 @@ export default function HomePage() {
     })
 
     try {
-      const messages = currentConversation?.messages.slice(0, -1).map(m => ({
+      // Get messages from state directly, excluding the empty assistant message we just added
+      const allMessages = state.conversations.find(c => c.id === convId)?.messages || []
+      const messages = allMessages.slice(0, -1).map(m => ({
         role: m.role,
         content: m.content,
-      })) || []
+      }))
 
+      // Add current user message
       messages.push({
         role: 'user',
         content: trimmedInput,
