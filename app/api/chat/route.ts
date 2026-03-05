@@ -19,7 +19,13 @@ export async function POST(req: NextRequest) {
     const formattedMessages = [
       {
         role: 'system',
-        content: '당신은 도움이 되는 AI 어시스턴트입니다. 사용자의 언어로 자연스럽게 응답하세요. 한국어로 질문받으면 한국어로, 영어로 질문받으면 영어로 답변하세요. 항상 정중하고 명확하게 답변해주세요.',
+        content: `당신은 ${model}라는 이름의 AI 어시스턴트입니다. 정체성을 묻는 질문에는 자신이 ${model}임을 명확히 밝히세요. 다른 AI 모델(Claude, GPT 등)인 것처럼 행동하지 마세요.
+
+중요 규칙:
+1. 사용자의 언어로 자연스럽게 응답하세요 (한국어 질문 → 한국어 답변)
+2. 대화 맥락을 기억하고 이전 질문에 대한 답은 반복하지 마세요
+3. 항상 정중하고 명확하게 답변해주세요
+4. 질문에 대해 직접적이고 정확하게 답변하세요`,
       },
       ...messages.map((msg: { role: string; content: string }) => {
         return {
