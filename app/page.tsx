@@ -82,6 +82,20 @@ export default function HomePage() {
     const hasVisionModel = currentModel.hasVision
     const imagesToSend = hasVisionModel ? selectedImages : []
 
+    // Build messages BEFORE any state updates
+    const existingMessages = state.conversations.find(c => c.id === convId)?.messages || []
+    const messages = existingMessages.map(m => ({
+      role: m.role,
+      content: m.content,
+    }))
+
+    // Add current user message to the array we'll send
+    messages.push({
+      role: 'user',
+      content: trimmedInput,
+    })
+
+    // Now update UI state
     addMessage({
       role: 'user',
       content: trimmedInput,
@@ -98,19 +112,6 @@ export default function HomePage() {
     })
 
     try {
-      // Get messages from state directly, excluding the empty assistant message we just added
-      const allMessages = state.conversations.find(c => c.id === convId)?.messages || []
-      const messages = allMessages.slice(0, -1).map(m => ({
-        role: m.role,
-        content: m.content,
-      }))
-
-      // Add current user message
-      messages.push({
-        role: 'user',
-        content: trimmedInput,
-      })
-
       const response = await fetch('/api/chat', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
