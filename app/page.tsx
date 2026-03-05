@@ -104,16 +104,20 @@ export default function HomePage() {
       }
 
       const reader = response.body?.getReader()
-      const decoder = new TextDecoder()
+      const decoder = new TextDecoder('utf-8', { fatal: false })
       let fullContent = ''
+      let buffer = ''
 
       if (reader) {
         while (true) {
           const { done, value } = await reader.read()
           if (done) break
 
-          const chunk = decoder.decode(value, { stream: true })
-          const lines = chunk.split('\n')
+          buffer += decoder.decode(value, { stream: true })
+          const lines = buffer.split('\n')
+
+          // Keep the last incomplete line in buffer
+          buffer = lines.pop() || ''
 
           for (const line of lines) {
             if (line.startsWith('data: ')) {
@@ -128,8 +132,25 @@ export default function HomePage() {
                   updateLastAssistantMessage(fullContent)
                 }
               } catch {
-                // Skip invalid JSON
+                // Skip invalid JSON - might be incomplete
               }
+            }
+          }
+        }
+
+        // Process any remaining buffer
+        if (buffer.startsWith('data: ')) {
+          const data = buffer.slice(6)
+          if (data !== '[DONE]') {
+            try {
+              const parsed = JSON.parse(data)
+              const content = parsed.choices?.[0]?.delta?.content || ''
+              if (content) {
+                fullContent += content
+                updateLastAssistantMessage(fullContent)
+              }
+            } catch {
+              // Skip invalid JSON
             }
           }
         }
