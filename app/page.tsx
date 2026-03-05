@@ -26,9 +26,28 @@ export default function HomePage() {
   const [selectedImages, setSelectedImages] = useState<string[]>([])
   const [isStreaming, setIsStreaming] = useState(false)
   const [sidebarOpen, setSidebarOpen] = useState(false)
+  const [viewportHeight, setViewportHeight] = useState(0)
 
   const chatContainerRef = useRef<HTMLDivElement>(null)
   const inputRef = useRef<HTMLTextAreaElement>(null)
+
+  // Handle visual viewport for mobile
+  useEffect(() => {
+    const updateHeight = () => {
+      if (window.visualViewport) {
+        setViewportHeight(window.visualViewport.height)
+      } else {
+        setViewportHeight(window.innerHeight)
+      }
+    }
+
+    updateHeight()
+
+    if (window.visualViewport) {
+      window.visualViewport.addEventListener('resize', updateHeight)
+      return () => window.visualViewport?.removeEventListener('resize', updateHeight)
+    }
+  }, [])
 
   useEffect(() => {
     if (chatContainerRef.current) {
@@ -187,7 +206,7 @@ export default function HomePage() {
   }
 
   return (
-    <div className="app-container">
+    <div className="app-container" style={{ height: viewportHeight ? `${viewportHeight}px` : '100dvh' }}>
       <Sidebar
         selectedModel={state.selectedModel}
         onModelChange={setSelectedModel}
@@ -209,17 +228,35 @@ export default function HomePage() {
       />
 
       <main className="main-content">
-        <header className="chat-header">
-          <button className="menu-button" onClick={() => setSidebarOpen(true)}>
-            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-              <line x1="3" y1="12" x2="21" y2="12" />
-              <line x1="3" y1="6" x2="21" y2="6" />
-              <line x1="3" y1="18" x2="21" y2="18" />
+        <header className="chat-header" style={{ position: 'sticky', top: 0, zIndex: 10 }}>
+          <button
+            onClick={() => setSidebarOpen(true)}
+            style={{
+              padding: '0.5rem 0.75rem',
+              borderRadius: '0.5rem',
+              background: '#fbbf24',
+              border: 'none',
+              cursor: 'pointer',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              fontWeight: 600,
+              fontSize: '1rem',
+            }}
+          >
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
+              <path d="M4 12l1.41 1.41L11 7.83V20h2V7.83l5.58 5.59L20 12l-8-8-8 8z"/>
             </svg>
           </button>
-          <span style={{ fontWeight: 500 }}>{currentModel.name}</span>
+          <span style={{ fontWeight: 500, color: 'var(--foreground)' }}>{currentModel.name}</span>
           {currentModel.hasVision && (
-            <span className="model-badge" style={{ fontSize: '0.75rem' }}>Vision</span>
+            <span style={{
+              fontSize: '0.75rem',
+              padding: '0.125rem 0.5rem',
+              borderRadius: '0.25rem',
+              background: 'rgba(59, 130, 246, 0.2)',
+              color: 'var(--primary)',
+            }}>Vision</span>
           )}
         </header>
 
