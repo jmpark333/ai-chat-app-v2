@@ -248,7 +248,7 @@ export default function HomePage() {
             }}
           >
             <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
-              <path d="M4 12l1.41 1.41L11 7.83V20h2V7.83l5.58 5.59L20 12l-8-8-8 8z"/>
+              <path d="M10 6L8.59 7.41 13.17 12l-4.58 4.59L10 18l6-6z"/>
             </svg>
           </button>
           <span style={{ fontWeight: 500, color: 'var(--foreground)' }}>{currentModel.name}</span>
