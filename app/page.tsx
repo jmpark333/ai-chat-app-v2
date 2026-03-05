@@ -59,6 +59,13 @@ export default function HomePage() {
     inputRef.current?.focus()
   }, [state.currentConversationId])
 
+  // Keep focus on input after streaming ends
+  useEffect(() => {
+    if (!isStreaming) {
+      inputRef.current?.focus()
+    }
+  }, [isStreaming])
+
   const handleImageSelect = (images: string[]) => {
     setSelectedImages(images)
   }
