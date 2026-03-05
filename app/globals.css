@@ -91,6 +91,7 @@ body {
   display: flex;
   align-items: center;
   padding: 1rem;
+  padding-top: max(1rem, env(safe-area-inset-top));
   border-bottom: 1px solid rgba(0, 0, 0, 0.1);
   background: var(--background);
   gap: 0.75rem;
