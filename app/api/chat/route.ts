@@ -16,12 +16,18 @@ export async function POST(req: NextRequest) {
       })
     }
 
-    const formattedMessages = messages.map((msg: { role: string; content: string }) => {
-      return {
-        role: msg.role,
-        content: msg.content,
-      }
-    })
+    const formattedMessages = [
+      {
+        role: 'system',
+        content: '당신은 도움이 되는 AI 어시스턴트입니다. 사용자의 언어로 자연스럽게 응답하세요. 한국어로 질문받으면 한국어로, 영어로 질문받으면 영어로 답변하세요. 항상 정중하고 명확하게 답변해주세요.',
+      },
+      ...messages.map((msg: { role: string; content: string }) => {
+        return {
+          role: msg.role,
+          content: msg.content,
+        }
+      }),
+    ]
 
     if (images && images.length > 0 && formattedMessages.length > 0) {
       const lastUserIndex = formattedMessages.map((m: { role: string }) => m.role).lastIndexOf('user')

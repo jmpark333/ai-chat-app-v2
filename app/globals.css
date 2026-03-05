@@ -12,11 +12,11 @@
 
 @media (prefers-color-scheme: dark) {
   :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-    --sidebar-bg: #171717;
+    --background: #121212;
+    --foreground: #f0f0f0;
+    --sidebar-bg: #1e1e1e;
     --primary: #60a5fa;
-    --primary-hover: #3b82f6;
+    --primary-hover: #93c5fd;
   }
 }
 
@@ -137,6 +137,18 @@ body {
   align-self: flex-start;
   background: rgba(0, 0, 0, 0.05);
   border-bottom-left-radius: 0.25rem;
+}
+
+@media (prefers-color-scheme: dark) {
+  .message.assistant {
+    background: rgba(255, 255, 255, 0.1);
+  }
+  .input-wrapper {
+    background: rgba(255, 255, 255, 0.1);
+  }
+  .chat-input::placeholder {
+    color: rgba(255, 255, 255, 0.5);
+  }
 }
 
 .message img {
